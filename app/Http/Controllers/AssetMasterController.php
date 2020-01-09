@@ -4,6 +4,10 @@ namespace App\Http\Controllers;
 
 use App\AssetMaster;
 use Illuminate\Http\Request;
+use App\Helpers\APIHelpers;
+use App\Imports\AssetImport;
+use Maatwebsite\Excel\Facades\Excel;
+use Session;
 
 class AssetMasterController extends Controller
 {
@@ -14,7 +18,9 @@ class AssetMasterController extends Controller
      */
     public function index()
     {
-        //
+        $assets = AssetMaster::all();
+        $response = APIHelpers::createAPIResponse(true, 200, 'Data', $assets);
+        return response()->json($response, 200);
     }
 
     /**
@@ -81,5 +87,29 @@ class AssetMasterController extends Controller
     public function destroy(AssetMaster $assetMaster)
     {
         //
+    }
+
+    /**
+     * [upload description]
+     * @return [type] [description]
+     */
+    public function upload()
+    {
+        $asset_save = Excel::import(new AssetImport, request()->file('upload_file'));
+        if ($asset_save) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Asset Saved', null);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 400, 'Asset not Saved', null);
+            return response()->json($response, 400);
+        }
+    }
+    /**
+     * [showRequestedAssets description]
+     * @return [type] [description]
+     */
+    public function showRequestedAssets()
+    {
+
     }
 }
