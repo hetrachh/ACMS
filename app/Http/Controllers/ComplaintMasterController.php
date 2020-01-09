@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\ComplaintMaster;
+use App\AssetMaster;
+use App\UserMaster;
+use Session;
 use Illuminate\Http\Request;
 
 class ComplaintMasterController extends Controller
@@ -35,7 +38,28 @@ class ComplaintMasterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $complain = new ComplaintMaster;
+
+        //$email = Session::get('login_id');
+
+        //echo $email;
+
+        // $id = UserMaster::where('emp_email', Session::get('login_id'))->first();
+        // $complain->emp_code = $id['emp_code'];
+        $complain->complaint_id = $request->input('complaint_id');
+        $complain->emp_code = $request->input('emp_code');
+        $complain->asset_id = $request->input('asset_id');
+        $asset = AssetMaster::where('asset_id', $request->input('asset_id'))->first();
+        $complain->asset_category = $asset['asset_category'];
+        $complain->asset_name = $asset['asset_name'];
+        $complain->row_no = $request->input('row_no');
+        $complain->desk_no = $request->input('desk_no');
+        $complain->compaint_desc = $request->input('compaint_desc');
+        $complain->status = 0;
+
+        $complain->save();
+
+        return response("Request send.", 200);
     }
 
     /**

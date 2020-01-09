@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\UserMaster;
 use Illuminate\Http\Request;
 
@@ -35,7 +36,29 @@ class UserMasterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
+    }
+
+    public function login(Request $request)
+    {
+        $data = UserMaster::where('emp_email', $request->input('emp_email'))->where('emp_password', $request->input('emp_password'))->first();
+
+        //echo $data;
+        //echo isset ($data);
+
+        if (isset($data) == 1) {
+            $email = $request->input('emp_email');
+            Session::put('login_id', $email);
+            $utype = UserMaster::where('emp_code', $data['emp_code'])->first();
+            if ($utype['emp_type'] == 1) {
+                return response("Loged In As Admin.(Server Manager).", 200);
+            } else {
+                return response("Loged In As Employee.", 200);
+            }
+
+        } else {
+            return response("You Are Not Regster yet", 404);
+        }
     }
 
     /**
