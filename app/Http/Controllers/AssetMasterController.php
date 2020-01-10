@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\AssetMaster;
+use App\UserMaster;
 use Illuminate\Http\Request;
 use App\Helpers\APIHelpers;
 use App\Imports\AssetImport;
+use DB;
 use Maatwebsite\Excel\Facades\Excel;
 use Session;
 
@@ -19,7 +21,7 @@ class AssetMasterController extends Controller
     public function index()
     {
         $assets = AssetMaster::all();
-        $response = APIHelpers::createAPIResponse(true, 200, 'Data', $assets);
+        $response = APIHelpers::createAPIResponse(false, 200, 'Data', $assets);
         return response()->json($response, 200);
     }
 
@@ -41,7 +43,20 @@ class AssetMasterController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $asset = new AssetMaster;
+        $asset->asset_id       = $request->input('asset_id');
+        $asset->asset_category = $request->input('asset_category');
+        $asset->asset_name     = $request->input('asset_name');
+        // $asset->asset_remark   = $request->input('asset_remark');
+        // $asset->asset_status   = $request->input('asset_status');
+        $asset_save            = $asset->save();
+        if ($asset_save) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Assset Save', null);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 400, 'Assset not Save', null);
+            return response()->json($response, 200);
+        }
     }
 
     /**
@@ -50,9 +65,16 @@ class AssetMasterController extends Controller
      * @param  \App\AssetMaster  $assetMaster
      * @return \Illuminate\Http\Response
      */
-    public function show(AssetMaster $assetMaster)
+    public function show(AssetMaster $assetMaster, $id)
     {
-        //
+        $assets = AssetMaster::where('asset_code', $id)->get();
+        if ($assets) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Asset', $assets);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 404, 'Asset not found', null);
+            return response()->json($response, 404);
+        }
     }
 
     /**
@@ -73,9 +95,19 @@ class AssetMasterController extends Controller
      * @param  \App\AssetMaster  $assetMaster
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, AssetMaster $assetMaster)
+    public function update(Request $request, AssetMaster $assetMaster, $id)
     {
-        //
+        $asset = AssetMaster::find($id);
+        $asset->asset_remark = $request->input('asset_remark');
+        $asset->asset_status = 0;
+        $asset_save = $asset->save();
+        if ($asset_save) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Asset status Updated', null);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 400, 'Asset status not Updated', null);
+            return response()->json($response, 400);
+        }
     }
 
     /**
@@ -104,12 +136,24 @@ class AssetMasterController extends Controller
             return response()->json($response, 400);
         }
     }
-    /**
-     * [showRequestedAssets description]
-     * @return [type] [description]
-     */
-    public function showRequestedAssets()
-    {
 
+    /**
+     * [showAllocatedAssets description]
+     * @param  Request $request [description]
+     * @return [type]           [description]
+     */
+    public function showAllocatedAssets(Request $request)
+    {
+        $employee = UserMaster::where('emp_code', $request->input('emp_code'))->first();
+        $assetdata = AssetMaster::where('emp_code', $request->input('emp_code'))->get();
+        $employeename = $employee['emp_name'];
+        if (count($assetdata) == 0) {
+            $response = APIHelpers::createAPIResponse(true, 404, 'This Employee dont have any Assets ', $assetdata);
+            return response()->json($response);
+        } else {
+            $assetdata->put('emp_name', $employeename);
+            $response = APIHelpers::createAPIResponse(false, 200, 'This Employee dont have any Assets ', $assetdata);
+            return response()->json($response);
+        }
     }
 }

@@ -23,3 +23,4 @@ Route::resource('/complaint', 'ComplaintMasterController');
 
 Route::post('/upload_employee', 'UserMasterController@upload');
 Route::post('/upload_asset', 'AssetMasterController@upload');
+Route::post('/showAssets', 'AssetMasterController@showAllocatedAssets');

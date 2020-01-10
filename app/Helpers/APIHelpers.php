@@ -2,6 +2,11 @@
 
 namespace  App\Helpers;
 
+// use Maatwebsite\Excel\Facades\Excel;
+// use App\UserMaster;
+// use App\AssetMaster;
+// use Illuminate\Http\Request;
+
 class APIHelpers
 {
     //we can call function without creating instance of this function
@@ -27,4 +32,15 @@ class APIHelpers
         }
         return $result;
     }
+
+
+    // public static function uploadData($importClass, $upload_file)
+    // {
+    //     $uploaddata_save = Excel::import(new $importClass, $upload_file);
+    //     if ($uploaddata_save) {
+    //         return false;
+    //     } else {
+    //         return true;
+    //     }
+    // }
 }
