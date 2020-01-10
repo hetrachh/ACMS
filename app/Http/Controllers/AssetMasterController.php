@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\AssetMaster;
+use App\UserMaster;
 use Illuminate\Http\Request;
 
 class AssetMasterController extends Controller
@@ -12,9 +13,9 @@ class AssetMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+       
     }
 
     /**

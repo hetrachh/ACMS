@@ -21,3 +21,26 @@ $factory->define(App\User::class, function (Faker $faker) {
         'remember_token' => str_random(10),
     ];
 });
+
+$factory->define(App\UserMaster::class, function (Faker $faker) {
+    return [
+        'emp_code' => $faker->unique()->numberBetween(1, 10),
+        'emp_name' => $faker->name,
+        'emp_phno' => $faker->phoneNumber,
+        'emp_email' => $faker->unique()->safeEmail,
+        'emp_designation' => $faker->randomElement(['QA','Frontend','Backend']),
+        'emp_password' => $faker->randomElement(['hello1','hello2','hello3']),
+        'emp_status' => rand(0, 1),
+        'emp_type' => rand(0, 1),
+    ];
+});
+
+$factory->define(App\AssetMaster::class, function (Faker $faker) {
+    
+    return [
+        'asset_id' => $faker->unique()->numberBetween(1, 10),
+        'asset_category' => $faker->randomElement(['Laptop', 'Pheripherals', 'Others']),
+        'asset_name' => $faker->name,
+        'emp_code' => $faker->unique()->numberBetween(1, 10),
+    ];
+});

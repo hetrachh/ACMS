@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Session;
 use App\UserMaster;
+use App\AssetMaster;
+use App\ComplaintMaster;
 use Illuminate\Http\Request;
 
 class UserMasterController extends Controller
@@ -33,9 +36,87 @@ class UserMasterController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+
+    public function login(Request $request)
     {
-        //
+        $data = UserMaster::where('emp_email', $request->input('emp_email'))->where('emp_password', $request->input('emp_password'))->first();
+
+        //echo $data;
+        //echo isset ($data);
+
+        if (isset($data) == 1) {
+            $email = $request->input('emp_email');
+            $request->session()->put('login_id', $email);
+            $utype = UserMaster::where('emp_code', $data['emp_code'])->first();
+            if ($utype['emp_type'] == 1) {
+                return response("Loged In As Admin.(Server Manager).", 200);
+            } else {
+                return response("Loged In As Employee.", 200);
+            }
+
+        } else {
+            return response("You Are Not Regster yet", 404);
+        }
+    }
+
+    public function seecomplain(Request $request)
+    {
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            $id = UserMaster::where('emp_email', $email)->first();
+            $data = ComplaintMaster::where('emp_code', $id['emp_code'])->orderBy('status')->get();
+            if (count($data) < 0) {
+                return response("You Don't Register Any Complaint", 404);
+            } else {
+                return response($data, 200);
+            }
+        }
+    }
+
+    public function seeasset(Request $request)
+    {
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            $id = UserMaster::where('emp_email', $email)->first();
+            $data = AssetMaster::where('emp_code', $id['emp_code'])->orderBy('created_at')->get();
+            if (count($data) < 0) {
+                return response("You Don't Have Single Asset.", 404);
+            } else {
+                return response($data, 200);
+            }
+        }
+    }
+
+    public function selfsolve(Request $request, $cid)
+    {
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            
+            $complian = ComplaintMaster::where("complaint_id", $cid)->update(['status' => 2]);
+
+            return response("Status Updated To Solved.", 200);
+        }
+    }
+
+    public function logout(Request $request)
+    {
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            $request->session()->flush();
+            return response("Log Out.", 200);
+        }
     }
 
     /**
@@ -67,9 +148,31 @@ class UserMasterController extends Controller
      * @param  \App\UserMaster  $userMaster
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, UserMaster $userMaster)
+    public function empupdatepass(Request $request)
     {
-        //
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            $cpass = UserMaster::select("emp_password")->where('emp_email', $email)->first();
+            //echo $cpass;
+            $current_pass = $request->input('current_pass');
+            $check = strcasecmp($cpass['emp_password'], $current_pass);
+            if ($check == 0) {
+                $npass = $request->input("new_pass");
+                $cnpass = $request->input("cnew_pass");
+                if (strcasecmp($npass, $cnpass) == 0) {
+                    $id = UserMaster::where('emp_email', $email)->update(['emp_password'=>$npass]);
+
+                    return response("Password Changed.", 200);
+                } else {
+                    return response("New Password & Confirm Password Not Match.", 422);
+                }
+            } else {
+                return response("Wrong Current Password.", 422);
+            }
+        }
     }
 
     /**
