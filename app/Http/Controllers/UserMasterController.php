@@ -19,7 +19,7 @@ class UserMasterController extends Controller
     public function index()
     {
         $users = UserMaster::all();
-        if ($users) {
+        if (count($users) > 0) {
             $response = APIHelpers::createAPIResponse(false, 200, 'users are', $users);
             return response()->json($response, 200);
         } else {
@@ -48,13 +48,13 @@ class UserMasterController extends Controller
     {
         $user           = new UserMaster;
         $user->emp_code = $request->input('emp_code');
-        $user->emp_code = $request->input('emp_name');
-        $user->emp_code = $request->input('emp_phno');
-        $user->emp_code = $request->input('emp_email');
-        $user->emp_code = $request->input('emp_designation');
-        $user->emp_code = $request->input('emp_password');
-        $user->emp_code = $request->input('emp_status');
-        $user->emp_code = $request->input('emp_type');
+        $user->emp_name = $request->input('emp_name');
+        $user->emp_phno = $request->input('emp_phno');
+        $user->emp_email = $request->input('emp_email');
+        $user->emp_designation = $request->input('emp_designation');
+        $user->emp_password = $request->input('emp_password');
+        // $user->emp_status = $request->input('emp_status');
+        $user->emp_type = $request->input('emp_type');
         $user_save      = $user->save();
         if ($user_save) {
             $response = APIHelpers::createAPIResponse(false, 200, 'user saved!', null);
@@ -105,12 +105,12 @@ class UserMasterController extends Controller
     {
         $user = UserMaster::find($id);
         $user->emp_code = $request->input('emp_code');
-        $user->emp_code = $request->input('emp_name');
-        $user->emp_code = $request->input('emp_phno');
-        $user->emp_code = $request->input('emp_email');
-        $user->emp_code = $request->input('emp_designation');
-        $user->emp_code = $request->input('emp_status');
-        $user->emp_code = $request->input('emp_type');
+        $user->emp_name = $request->input('emp_name');
+        $user->emp_phno = $request->input('emp_phno');
+        $user->emp_email = $request->input('emp_email');
+        $user->emp_designation = $request->input('emp_designation');
+        $user->emp_status = $request->input('emp_status');
+        $user->emp_type = $request->input('emp_type');
         $user_save      = $user->save();
         if ($user_save) {
             $response = APIHelpers::createAPIResponse(false, 200, 'user Updated!', null);

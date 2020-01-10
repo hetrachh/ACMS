@@ -21,8 +21,13 @@ class AssetMasterController extends Controller
     public function index()
     {
         $assets = AssetMaster::all();
-        $response = APIHelpers::createAPIResponse(false, 200, 'Data', $assets);
-        return response()->json($response, 200);
+        if (count($assets) > 0) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Assets Are::', $assets);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 404, 'There are no assets', null);
+            return response()->json($response, 200);
+        }
     }
 
     /**
@@ -67,7 +72,7 @@ class AssetMasterController extends Controller
      */
     public function show(AssetMaster $assetMaster, $id)
     {
-        $assets = AssetMaster::where('asset_code', $id)->get();
+        $assets = AssetMaster::find($id);
         if ($assets) {
             $response = APIHelpers::createAPIResponse(false, 200, 'Asset', $assets);
             return response()->json($response, 200);

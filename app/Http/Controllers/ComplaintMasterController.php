@@ -17,7 +17,7 @@ class ComplaintMasterController extends Controller
     public function index()
     {
         $complaints = ComplaintMaster::all();
-        if ($complaints) {
+        if (count($complaints) > 0) {
             $response = APIHelpers::createAPIResponse(false, 200, 'Complaints are', $complaints);
             return response()->json($response, 200);
         } else {
@@ -53,15 +53,14 @@ class ComplaintMasterController extends Controller
      * @param  \App\ComplaintMaster  $complaintMaster
      * @return \Illuminate\Http\Response
      */
-    public function show(ComplaintMaster $complaintMaster)
+    public function show(ComplaintMaster $complaintMaster, $id)
     {
-        $emp_code  = Session::get('login_id');
-        $complaint = ComplaintMaster::where('emp_code', $emp_code)->get();
+        $complaint = ComplaintMaster::find($id);
         if (count($complaint) > 0) {
-                $response = APIHelpers::createAPIResponse(true, 200, 'Data', $complaint);
+                $response = APIHelpers::createAPIResponse(true, 200, 'Complaint', $complaint);
                 return response()->json($response, 200);
         } else {
-                $response = APIHelpers::createAPIResponse(false, 404, 'No Complaints', null);
+                $response = APIHelpers::createAPIResponse(false, 404, 'No Complaint found', null);
                 return response()->json($response, 404);
         }
     }
@@ -91,10 +90,10 @@ class ComplaintMasterController extends Controller
         $complaint->status = $complaint_status;
         $comlaintSave = $complaint->save();
         if ($comlaintSave) {
-            $response = APIHelpers::createAPIResponse(true, 200, 'Complaint Update', null);
+            $response = APIHelpers::createAPIResponse(false, 200, 'Complaint Update', null);
             return response()->json($response, 200);
         } else {
-            $response = APIHelpers::createAPIResponse(false, 400, 'Complaint not  Update', null);
+            $response = APIHelpers::createAPIResponse(true, 400, 'Complaint not  Update', null);
             return response()->json($response, 400);
         }
     }
