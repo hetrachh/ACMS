@@ -20,7 +20,7 @@ class CreateUserMastersTable extends Migration
             $table->string('emp_email', 100);
             $table->string('emp_designation', 100);
             $table->string('emp_password', 100);
-            $table->integer('emp_status');
+            $table->integer('emp_status')->default(1);
             $table->integer('emp_type');
             $table->timestamps();
         });

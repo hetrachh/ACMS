@@ -7,17 +7,26 @@ use App\AssetMaster;
 use App\UserMaster;
 use Session;
 use Illuminate\Http\Request;
+use App\Helpers\APIHelpers;
+use Session;
 
 class ComplaintMasterController extends Controller
 {
     /**
      * Display a listing of the resource.
-     *
+     * this function will be executed when admin login
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
     {
-        
+        $complaints = ComplaintMaster::all();
+        if (count($complaints) > 0) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Complaints are', $complaints);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 400, 'Hurraay No complaints', null);
+            return response()->json($response, 400);
+        }
     }
 
     /**
@@ -25,6 +34,10 @@ class ComplaintMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function create()
+    {
+        //
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -73,9 +86,16 @@ class ComplaintMasterController extends Controller
      * @param  \App\ComplaintMaster  $complaintMaster
      * @return \Illuminate\Http\Response
      */
-    public function show(ComplaintMaster $complaintMaster)
+    public function show(ComplaintMaster $complaintMaster, $id)
     {
-        //
+        $complaint = ComplaintMaster::find($id);
+        if (count($complaint) > 0) {
+                $response = APIHelpers::createAPIResponse(true, 200, 'Complaint', $complaint);
+                return response()->json($response, 200);
+        } else {
+                $response = APIHelpers::createAPIResponse(false, 404, 'No Complaint found', null);
+                return response()->json($response, 404);
+        }
     }
 
     /**
@@ -96,9 +116,19 @@ class ComplaintMasterController extends Controller
      * @param  \App\ComplaintMaster  $complaintMaster
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, ComplaintMaster $complaintMaster)
+    public function update(Request $request, ComplaintMaster $complaintMaster, $id)
     {
-        //
+        $complaint_status = $request->input('complaint_status');
+        $complaint = ComplaintMaster::find($id);
+        $complaint->status = $complaint_status;
+        $comlaintSave = $complaint->save();
+        if ($comlaintSave) {
+            $response = APIHelpers::createAPIResponse(false, 200, 'Complaint Update', null);
+            return response()->json($response, 200);
+        } else {
+            $response = APIHelpers::createAPIResponse(true, 400, 'Complaint not  Update', null);
+            return response()->json($response, 400);
+        }
     }
 
     /**

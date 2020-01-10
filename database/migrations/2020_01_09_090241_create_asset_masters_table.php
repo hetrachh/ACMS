@@ -17,7 +17,9 @@ class CreateAssetMastersTable extends Migration
             $table->bigInteger('asset_id')->primary();
             $table->string('asset_category', 100);
             $table->string('asset_name', 100);
-            $table->bigInteger('emp_code');
+            $table->bigInteger('emp_code')->nullable();
+            $table->string('asset_remark', 100)->default('Working');
+            $table->integer('asset_status')->default(1);
             $table->foreign('emp_code')->references('emp_code')->on('user_masters')->onDelete('cascade');
             $table->timestamps();
         });

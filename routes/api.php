@@ -17,6 +17,13 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
+Route::resource('/users', 'UserMasterController');
+Route::resource('/assets', 'AssetMasterController');
+Route::resource('/complaint', 'ComplaintMasterController');
+
+Route::post('/upload_employee', 'UserMasterController@upload');
+Route::post('/upload_asset', 'AssetMasterController@upload');
+Route::post('/showAssets', 'AssetMasterController@showAllocatedAssets');
 Route::post('/login', 'UserMasterController@login');
 Route::get('/logout', 'UserMasterController@logout');
 Route::get('/see_complain', 'UserMasterController@seecomplain');
