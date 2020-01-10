@@ -23,9 +23,8 @@ $factory->define(App\User::class, function (Faker $faker) {
 });
 
 $factory->define(App\UserMaster::class, function (Faker $faker) {
-
     return [
-        'emp_code' => $faker->unique()->numberBetween(1, 20),
+        'emp_code' => $faker->unique()->numberBetween(1, 10),
         'emp_name' => $faker->name,
         'emp_phno' => $faker->phoneNumber,
         'emp_email' => $faker->unique()->safeEmail,

@@ -15,9 +15,9 @@ class ComplaintMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -25,10 +25,6 @@ class ComplaintMasterController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
-        //
-    }
 
     /**
      * Store a newly created resource in storage.
@@ -38,28 +34,37 @@ class ComplaintMasterController extends Controller
      */
     public function store(Request $request)
     {
-        $complain = new ComplaintMaster;
+        
+        
+        $email = $request->session()->get('login_id');
+        $check = strcasecmp($email, "");
+        if ($check == 0) {
+            return response("You Are Not Log In Yet.", 404);
+        } else {
+            
+            $complain = new ComplaintMaster;
+            $email = $request->session()->get('login_id');
 
-        //$email = Session::get('login_id');
+             //echo $email;
+            $id = UserMaster::where('emp_email', $email)->first();
+            //echo $id;
+            $complain->emp_code = $id['emp_code'];
+            //$complain->complaint_id = $request->input('complaint_id');
+            //$complain->emp_code = $request->input('emp_code');
+            $complain->asset_id = $request->input('asset_id');
+            $asset = AssetMaster::where('asset_id', $request->input('asset_id'))->first();
+            $complain->asset_category = $asset['asset_category'];
+            $complain->asset_name = $asset['asset_name'];
+            $complain->row_no = $request->input('row_no');
+            $complain->desk_no = $request->input('desk_no');
+            $complain->compaint_desc = $request->input('compaint_desc');
+            $complain->status = 1;
 
-        //echo $email;
+            $complain->save();
+        
+            return response("Request send.", 200);
+        }
 
-        // $id = UserMaster::where('emp_email', Session::get('login_id'))->first();
-        // $complain->emp_code = $id['emp_code'];
-        $complain->complaint_id = $request->input('complaint_id');
-        $complain->emp_code = $request->input('emp_code');
-        $complain->asset_id = $request->input('asset_id');
-        $asset = AssetMaster::where('asset_id', $request->input('asset_id'))->first();
-        $complain->asset_category = $asset['asset_category'];
-        $complain->asset_name = $asset['asset_name'];
-        $complain->row_no = $request->input('row_no');
-        $complain->desk_no = $request->input('desk_no');
-        $complain->compaint_desc = $request->input('compaint_desc');
-        $complain->status = 0;
-
-        $complain->save();
-
-        return response("Request send.", 200);
     }
 
     /**

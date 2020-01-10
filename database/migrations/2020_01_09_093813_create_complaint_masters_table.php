@@ -14,7 +14,7 @@ class CreateComplaintMastersTable extends Migration
     public function up()
     {
         Schema::create('complaint_masters', function (Blueprint $table) {
-            $table->bigInteger('complaint_id')->primary();
+            $table->Increments('complaint_id');
             $table->bigInteger('emp_code');
             $table->bigInteger('asset_id');
             $table->integer('row_no');
