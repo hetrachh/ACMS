@@ -62,7 +62,7 @@ class ComplaintMasterController extends Controller
 
             $complain->save();
         
-            return response("Request send.", 200);
+            return response("Request is send.", 200);
         }
 
     }
