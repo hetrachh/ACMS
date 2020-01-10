@@ -8,7 +8,6 @@ use App\UserMaster;
 use Session;
 use Illuminate\Http\Request;
 use App\Helpers\APIHelpers;
-use Session;
 
 class ComplaintMasterController extends Controller
 {
@@ -71,7 +70,7 @@ class ComplaintMasterController extends Controller
             $complain->row_no = $request->input('row_no');
             $complain->desk_no = $request->input('desk_no');
             $complain->compaint_desc = $request->input('compaint_desc');
-            $complain->status = 1;
+            $complain->status = 0;
 
             $complain->save();
         
