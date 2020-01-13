@@ -51,7 +51,7 @@ class ComplaintMasterController extends Controller
         $email = $request->session()->get('login_id');
         $check = strcasecmp($email, "");
         if ($check == 0) {
-            return response("You Are Not Log In Yet.", 404);
+            return response("You Are Not Log In Yet.", 401);
         } else {
             
             $complain = new ComplaintMaster;
